@@ -2,43 +2,38 @@
 #include <stdlib.h>
 #define tam 10
 
-int buscaBinaria(int vet[], int var, int inicio, int limite)
+int buscaBinaria(int vet[], int var, int inicio, int limite, int *cont)
 {
 
-   int contador = 0, meio;
+    int meio;
 
-    while(inicio <= limite)
-    {
-
-        contador++;
-        meio = (inicio +limite) / 2;
+    if(inicio > limite)    return -1;
+    
+        (*cont)++;
+        meio = (inicio + limite) / 2;
 
         if(var == vet[meio])
         {
 
-            printf("Elemento %d foi encontrado após %d passos!\n", var, contador);
             return meio;
             
         }   
-
+        
         if(var < vet[meio])
         {
 
-            limite = meio - 1;
+            return buscaBinaria(vet, var, inicio, meio - 1, cont);
 
         }
 
         else
         {
-
-            inicio = meio + 1;
+        
+            return buscaBinaria(vet, var, meio + 1, limite, cont);
 
         }
 
-    }
-
-    printf("Elemento %d não encontrado após %d passos!\n", var, contador);
-    return -1;
+        
 
 }
 
@@ -121,7 +116,7 @@ void print(int vet[])
 int main()
 {
 
-    int vet[tam], var, bin;
+    int vet[tam], var, bin, cont = 0;
     
     s(vet);
     quickSort(vet, 0, tam - 1);
@@ -130,7 +125,11 @@ int main()
     printf("Digite um valor a ser encontrado: ");
     scanf("%d", &var);
     
-    buscaBinaria(vet, var, 0, tam - 1);
-    
+    bin = buscaBinaria(vet, var, 0, tam - 1, &cont);
+
+    if(bin >= 0)     printf("O elemento foi encontrado no indice %d após %d", bin, cont);
+    else    printf("\nElemento não encontrado!"); 
+
+    return 0;
 
 }
