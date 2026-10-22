@@ -1,39 +1,45 @@
+//Busca binária RECURSIVA: mesma ideia da versão iterativa, mas em vez de um laço a função chama a si mesma
+//passando apenas a metade do vetor onde o valor ainda pode estar. O caso base é o intervalo vazio (inicio > limite).
+
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #define tam 10
 
+//Retorna o índice do elemento ou -1 se ele não existir. Em *cont fica o número de passos (comparações com o meio).
 int buscaBinaria(int vet[], int var, int inicio, int limite, int *cont)
 {
 
     int meio;
 
+    //caso base: intervalo vazio, o elemento não está no vetor
     if(inicio > limite)    return -1;
-    
-        (*cont)++;
-        meio = (inicio + limite) / 2;
 
-        if(var == vet[meio])
-        {
+    (*cont)++;
 
-            return meio;
-            
-        }   
-        
-        if(var < vet[meio])
-        {
+    //equivale a (inicio + limite) / 2, mas não estoura o limite do int em vetores enormes
+    meio = inicio + (limite - inicio) / 2;
 
-            return buscaBinaria(vet, var, inicio, meio - 1, cont);
+    if(var == vet[meio])
+    {
 
-        }
+        return meio;
 
-        else
-        {
-        
-            return buscaBinaria(vet, var, meio + 1, limite, cont);
+    }
 
-        }
+    if(var < vet[meio])
+    {
 
-        
+        return buscaBinaria(vet, var, inicio, meio - 1, cont);
+
+    }
+
+    else
+    {
+
+        return buscaBinaria(vet, var, meio + 1, limite, cont);
+
+    }
 
 }
 
@@ -74,7 +80,7 @@ void quickSort(int vet[], int inicio, int fim)
     if(inicio < fim)
     {
 
-        //Seleciona o último elemento, pivô, e o posiciona-o no lugar correto com os números menores à esquerda e os maiores à direita.
+        //Seleciona o último elemento, pivô, e posiciona-o no lugar correto com os números menores à esquerda e os maiores à direita.
         //Em seguida, particiona o vetor em dois "subvetores" e organiza seguindo o mesmo principio do pivô
         int meio = particionar(vet, inicio, fim);
         quickSort(vet, inicio, meio - 1);
@@ -84,22 +90,19 @@ void quickSort(int vet[], int inicio, int fim)
 
 }
 
-void s(int vet[])
+void preencher(int vet[])
 {
 
     for(int i = 0; i < tam; i++)
     {
 
         vet[i] = rand() % 100;
-        printf("[%d] ", vet[i]);
 
     }
 
-    printf("\n");
-
 }
 
-void print(int vet[])
+void imprimir(int vet[])
 {
 
     for(int i = 0; i < tam; i++)
@@ -116,19 +119,32 @@ void print(int vet[])
 int main()
 {
 
-    int vet[tam], var, bin, cont = 0;
-    
-    s(vet);
+    int vet[tam], var, indice, cont = 0;
+
+    srand(time(NULL));
+
+    preencher(vet);
+    printf("Original: ");
+    imprimir(vet);
+
+    //a busca binária só funciona em vetores ordenados
     quickSort(vet, 0, tam - 1);
-    print(vet);
+    printf("Ordenado: ");
+    imprimir(vet);
 
     printf("Digite um valor a ser encontrado: ");
-    scanf("%d", &var);
-    
-    bin = buscaBinaria(vet, var, 0, tam - 1, &cont);
+    if(scanf("%d", &var) != 1)
+    {
 
-    if(bin >= 0)     printf("O elemento foi encontrado no indice %d após %d", bin, cont);
-    else    printf("\nElemento não encontrado!"); 
+        printf("Entrada inválida!\n");
+        return 1;
+
+    }
+
+    indice = buscaBinaria(vet, var, 0, tam - 1, &cont);
+
+    if(indice >= 0)     printf("Elemento %d encontrado no índice %d após %d passo(s)!\n", var, indice, cont);
+    else                printf("Elemento %d não encontrado após %d passo(s)!\n", var, cont);
 
     return 0;
 
